@@ -1,0 +1,2 @@
+# goBeyond
+Go practice project
