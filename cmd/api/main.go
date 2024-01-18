@@ -34,5 +34,5 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/v1/healthcheck", app.)
+	mux.HandleFunc("/v1/healthcheck", app.healthcheckHandler)
 }
