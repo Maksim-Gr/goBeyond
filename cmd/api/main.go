@@ -2,9 +2,11 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 const version = "1.0.0"
@@ -35,4 +37,16 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/v1/healthcheck", app.healthcheckHandler)
+
+	srv := &http.Server{
+		Addr:         fmt.Sprintf(":%d", cfg.port),
+		Handler:      mux,
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 30 * time.Second,
+	}
+
+	logger.Printf("starting  %s  server on %s", cfg.env, srv.Addr)
+	err := srv.ListenAndServe()
+	logger.Fatal(err)
 }
