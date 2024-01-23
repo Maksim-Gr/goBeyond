@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/Maksim-Gr/goBeyond/internal/data"
 	"net/http"
+	"time"
 )
 
 func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Request) {
@@ -15,5 +17,18 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 		http.NotFound(w, r)
 		return
 	}
-	fmt.Fprintf(w, "show details for the movie %d\n", id)
+	movie := data.Movie{
+		ID:        id,
+		CreatedAt: time.Now(),
+		Title:     "The die another day",
+		Runtime:   102,
+		Genres:    []string{"horror", "action"},
+		Version:   1,
+	}
+
+	err = app.WriteJson(w, http.StatusOK, movie, nil)
+	if err != nil {
+		app.logger.Println(err)
+		http.Error(w, "The server encountered a problem and could not process your request", http.StatusInternalServerError)
+	}
 }
