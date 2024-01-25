@@ -15,3 +15,15 @@ func (app *application) errorResponse(w http.ResponseWriter, r *http.Request, st
 		w.WriteHeader(500)
 	}
 }
+
+func (app *application) serverErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
+	app.logError(r, err)
+
+	message := "the server encountered a problem and could not process your request"
+	app.errorResponse(w, r, http.StatusInternalServerError, message)
+}
+
+func (app *application) notFoundResponse(w http.ResponseWriter, r *http.Request) {
+	message := "the requested source could not be found"
+	app.errorResponse(w, r, http.StatusNotFound, message)
+}
