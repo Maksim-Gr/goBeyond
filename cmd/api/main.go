@@ -1,12 +1,16 @@
 package main
 
 import (
+	"context"
+	"database/sql"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	_ "github.com/lib/pq"
 )
 
 const version = "1.0.0"
@@ -49,4 +53,13 @@ func main() {
 	logger.Printf("starting  %s  server on %s", cfg.env, srv.Addr)
 	err := srv.ListenAndServe()
 	logger.Fatal(err)
+}
+
+func openDB(cfg config) (*sql.DB, error) {
+	db, err := sql.Open("postgres", cfg.db.dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background())
 }
