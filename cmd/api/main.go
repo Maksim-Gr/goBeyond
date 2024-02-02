@@ -37,6 +37,15 @@ func main() {
 
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
+	db, err := openDB(cfg)
+	if err != nil {
+		logger.Fatal(err)
+	}
+
+	defer db.Close()
+
+	logger.Printf("database connection pool established")
+
 	app := &application{
 		config: cfg,
 		logger: logger,
@@ -51,7 +60,7 @@ func main() {
 	}
 
 	logger.Printf("starting  %s  server on %s", cfg.env, srv.Addr)
-	err := srv.ListenAndServe()
+	err = srv.ListenAndServe()
 	logger.Fatal(err)
 }
 
