@@ -1,6 +1,7 @@
 package data
 
 import (
+	"database/sql"
 	"github.com/Maksim-Gr/goBeyond/internal/validator"
 	"time"
 )
@@ -28,4 +29,8 @@ func ValidateMovie(v *validator.Validator, movie *Movie) {
 	v.Check(len(movie.Genres) >= 1, "genres", "must contain at least 1 genre")
 	v.Check(len(movie.Genres) <= 5, "genres", "must not contain more than 5 genres")
 	v.Check(validator.Unique(movie.Genres), "genres", "must not contain duplicate values")
+}
+
+type MovieModel struct {
+	DB *sql.DB
 }
