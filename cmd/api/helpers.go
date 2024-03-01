@@ -7,6 +7,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"io"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 )
@@ -78,4 +79,14 @@ func (app *application) readJson(w http.ResponseWriter, r *http.Request, dst int
 		return errors.New("body must contain a single JSON value")
 	}
 	return nil
+}
+
+func (app *application) readSting(qs url.Values, key string, defaultValue string) string {
+	s := qs.Get(key)
+
+	if s == "" {
+		return defaultValue
+	}
+
+	return s
 }
