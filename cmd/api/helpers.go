@@ -90,3 +90,7 @@ func (app *application) readSting(qs url.Values, key string, defaultValue string
 
 	return s
 }
+
+func (app *application) readCSV(qs url.Values, key string, defaultValue []string) []string {
+	return nil
+}
