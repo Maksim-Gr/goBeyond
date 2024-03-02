@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/Maksim-Gr/goBeyond/internal/validator"
 	"github.com/julienschmidt/httprouter"
 	"io"
 	"net/http"
@@ -99,4 +100,20 @@ func (app *application) readCSV(qs url.Values, key string, defaultValue []string
 	}
 
 	return strings.Split(csv, ",")
+}
+
+func (app *application) readInt(qs url.Values, key string, defaultValue int, v *validator.Validator) int {
+	s := qs.Get(key)
+
+	if s == "" {
+		return defaultValue
+	}
+
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		v.AddError(key, "must be integer value")
+		return defaultValue
+	}
+
+	return i
 }
