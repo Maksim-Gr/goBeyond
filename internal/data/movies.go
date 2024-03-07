@@ -139,3 +139,10 @@ func (m MovieModel) Delete(id int64) error {
 	return nil
 
 }
+
+func (m MovieModel) GetAll(title string, genres []string, filters Filters) ([]*Movie, error) {
+	query := `
+		SELECT id, created_at, title, year, runtime, genres, version
+
+`
+}
