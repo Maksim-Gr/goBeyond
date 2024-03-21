@@ -214,4 +214,5 @@ func (app *application) listMoviesHandler(w http.ResponseWriter, r *http.Request
 		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}
+	fmt.Fprintf(w, "%+v\n", input)
 }
