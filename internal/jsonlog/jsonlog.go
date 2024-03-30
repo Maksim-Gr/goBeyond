@@ -1,5 +1,12 @@
 package jsonlog
 
+import (
+	"io"
+	"runtime/debug"
+	"sync"
+	"time"
+)
+
 type Level int8
 
 const (
@@ -19,5 +26,45 @@ func (l Level) String() string {
 		return "FATAL"
 	default:
 		return ""
+	}
+}
+
+type Logger struct {
+	out      io.Writer
+	minLevel Level
+	mu       sync.Mutex
+}
+
+func New(out io.Writer, minLevel Level) *Logger {
+	return &Logger{
+		out:      out,
+		minLevel: minLevel,
+	}
+}
+
+func (l *Logger) PrintInfo(message string, properties map[string]string) {
+	l.p
+}
+
+func (l *Logger) print(level Level, message string, properties map[string]string) (int, error) {
+	if level < l.minLevel {
+		return 0, nil
+	}
+	//struct to hold values
+	aux := struct {
+		Level      string            `json:"level"`
+		Time       string            `json:"time"`
+		Message    string            `json:"message"`
+		Properties map[string]string `json:"properties,omitempty"`
+		Trace      string            `json:"trace,omitempty"`
+	}{
+		Level:      level.String(),
+		Time:       time.Now().UTC().Format(time.RFC3339),
+		Message:    message,
+		Properties: properties,
+	}
+
+	if level >= LevelError {
+		aux.Trace = string(debug.Stack())
 	}
 }
