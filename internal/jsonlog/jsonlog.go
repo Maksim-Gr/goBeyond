@@ -3,6 +3,7 @@ package jsonlog
 import (
 	"encoding/json"
 	"io"
+	"os"
 	"runtime/debug"
 	"sync"
 	"time"
@@ -44,7 +45,16 @@ func New(out io.Writer, minLevel Level) *Logger {
 }
 
 func (l *Logger) PrintInfo(message string, properties map[string]string) {
-	l.p
+	l.print(LevelInfo, message, properties)
+}
+
+func (l *Logger) PrintError(err error, properties map[string]string) {
+	l.print(LevelError, err.Error(), properties)
+}
+
+func (l *Logger) PrintFatal(err error, properties map[string]string) {
+	l.print(LevelFatal, err.Error(), properties)
+	os.Exit(1)
 }
 
 func (l *Logger) print(level Level, message string, properties map[string]string) (int, error) {
@@ -79,4 +89,8 @@ func (l *Logger) print(level Level, message string, properties map[string]string
 	defer l.mu.Unlock()
 
 	return l.out.Write(append(line, '\n'))
+}
+
+func (l *Logger) Write(message []byte) (n int, err error) {
+	return l.print(LevelError, string(message), nil)
 }
