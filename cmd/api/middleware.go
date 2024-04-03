@@ -28,8 +28,3 @@ func (app *application) rateLimit(next http.Handler) http.Handler {
 		}
 	})
 }
-
-func (app *application) rateLimitExceededResponse(w http.ResponseWriter, r *http.Request) {
-	message := "rate limit exceeded"
-	app.errorResponse(w, r, http.StatusTooManyRequests, message)
-}
