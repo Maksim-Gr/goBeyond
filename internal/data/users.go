@@ -2,6 +2,7 @@ package data
 
 import (
 	"errors"
+	"github.com/Maksim-Gr/goBeyond/internal/validator"
 	"golang.org/x/crypto/bcrypt"
 	"time"
 )
@@ -32,4 +33,10 @@ func (p *password) Matches(plaintextPassword string) (bool, error) {
 		}
 	}
 	return true, nil
+}
+
+func ValidatePassword(v *validator.Validator, email string) {
+	v.Check(email != "", "email", "email must be provided")
+	v.Check(validator.Matches(email, validator.EmailRX), "email", "must be a valid email address")
+
 }
