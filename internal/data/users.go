@@ -49,6 +49,18 @@ func (m UserModel) GetByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
+func (m UserModel) Update(user *User) error {
+	query := `
+	UPDATE users 
+	SET name = $1, email=$2, password_hash = $3, activated=$4, version = version +1
+	WHERE id = $5 and version = $6
+	RETURNING version
+	`
+	args := []interface{}
+
+	return nil
+}
+
 type User struct {
 	ID        int64     `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
