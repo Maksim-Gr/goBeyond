@@ -6,6 +6,7 @@ import (
 	"flag"
 	"github.com/Maksim-Gr/goBeyond/internal/data"
 	"github.com/Maksim-Gr/goBeyond/internal/jsonlog"
+	"github.com/Maksim-Gr/goBeyond/internal/mailer"
 	"os"
 	"time"
 
@@ -28,12 +29,21 @@ type config struct {
 		burst   int
 		enabled bool
 	}
+
+	smtp struct {
+		host     string
+		port     int
+		username string
+		password string
+		sender   string
+	}
 }
 
 type application struct {
 	config config
 	logger *jsonlog.Logger
 	models data.Models
+	mailer mailer.Mailer
 }
 
 func main() {
@@ -48,6 +58,12 @@ func main() {
 	flag.IntVar(&cfg.db.maxOpenConns, "db-max-open-conns", 25, "PostgreSQL max open connections")
 	flag.IntVar(&cfg.db.maxIdleConns, "db-max-idle-conns", 25, "PostgreSQL max idle connections")
 	flag.StringVar(&cfg.db.maxIdleTime, "db-max-idle-time", "15m", "PostgreSQL max connection idle time")
+
+	flag.StringVar(&cfg.smtp.host, "smtp-host", "smtp///", "SMTP host")
+	flag.IntVar(&cfg.smtp.port, "smtp-port", 25, "SMTP port")
+	flag.StringVar(&cfg.smtp.username, "smtp-username", "username", "SMTP username")
+	flag.StringVar(&cfg.smtp.password, "smtp-password", "d627813689127", "SMTP password")
+	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "email of sender", "SMTP sender")
 
 	flag.Parse()
 
@@ -66,6 +82,7 @@ func main() {
 		config: cfg,
 		logger: logger,
 		models: data.NewModels(db),
+		mailer: mailer.New(cfg.smtp.host, cfg.smtp.port, cfg.smtp.username, cfg.smtp.password, cfg.smtp.sender),
 	}
 
 	err = app.serve()
