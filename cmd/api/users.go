@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"github.com/Maksim-Gr/goBeyond/internal/data"
 	"github.com/Maksim-Gr/goBeyond/internal/validator"
 	"net/http"
@@ -45,6 +46,12 @@ func (app *application) registerHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				app.logger.PrintError(fmt.Errorf("%s", err), nil)
+			}
+		}()
+
 		err = app.mailer.Send(user.Email, "user_welcome.tmpl", user)
 		if err != nil {
 			app.logger.PrintError(err, nil)
