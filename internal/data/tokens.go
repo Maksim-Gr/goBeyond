@@ -3,6 +3,7 @@ package data
 import (
 	"crypto/rand"
 	"crypto/sha256"
+	"database/sql"
 	"encoding/base32"
 	"github.com/Maksim-Gr/goBeyond/internal/validator"
 	"time"
@@ -18,6 +19,18 @@ type Token struct {
 	UserID    int64
 	Expiry    time.Time
 	Scope     string
+}
+
+type TokenModel struct {
+	DB *sql.DB
+}
+
+func (m TokenModel) New(userID int64, ttl time.Duration, scope string) (*Token, error) {
+	token, err := generateToken(userID, ttl, scope)
+	if err != nil {
+		return nil, err
+	}
+	return token, nil
 }
 
 func validateTokenPlainText(v *validator.Validator, tokenPlaintext string) {
