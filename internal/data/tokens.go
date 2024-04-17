@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base32"
+	"github.com/Maksim-Gr/goBeyond/internal/validator"
 	"time"
 )
 
@@ -19,6 +20,10 @@ type Token struct {
 	Scope     string
 }
 
+func validateTokenPlainText(v *validator.Validator, tokenPlaintext string) {
+	v.Check(tokenPlaintext != "", "token", "must be provided")
+	v.Check(len(tokenPlaintext) == 26, "token", "must be 26 bytes long")
+}
 func generateToken(userID int64, ttl time.Duration, scope string) (*Token, error) {
 	token := &Token{
 		UserID: userID,
