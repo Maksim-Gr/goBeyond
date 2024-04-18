@@ -43,6 +43,7 @@ func (m TokenModel) Insert(token *Token) error {
 	defer cancel()
 
 	_, err := m.DB.ExecContext(ctx, query, args...)
+	return err
 }
 
 func validateTokenPlainText(v *validator.Validator, tokenPlaintext string) {
