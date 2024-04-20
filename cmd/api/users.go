@@ -68,3 +68,6 @@ func (app *application) registerHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 }
+func (app *application) activateUserHandler(w http.ResponseWriter, r *http.Request) {
+
+}
