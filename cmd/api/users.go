@@ -69,5 +69,21 @@ func (app *application) registerHandler(w http.ResponseWriter, r *http.Request) 
 
 }
 func (app *application) activateUserHandler(w http.ResponseWriter, r *http.Request) {
+	var input struct {
+		TokenPlainText string `json:"token"`
+	}
 
+	err := app.readJson(w, r, &input)
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	v := validator.New()
+	if data.ValidateTokenPlaintext(v, input.TokenPlainText); !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	user, err := app.models.Users.GetByEmail()
 }
