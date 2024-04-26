@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/Maksim-Gr/goBeyond/internal/data"
 	"golang.org/x/time/rate"
 	"net"
 	"net/http"
@@ -78,6 +79,12 @@ func (app *application) rateLimit(next http.Handler) http.Handler {
 
 func (app *application) authenticate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Vary", "Authorization")
 
+		authorizationHeader := r.Header.Get("Authorization")
+
+		if authorizationHeader == "" {
+			r = app.contextSetUser(r, data.U)
+		}
 	})
 }
