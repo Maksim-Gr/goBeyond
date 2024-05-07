@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"database/sql"
+	"github.com/lib/pq"
 	"time"
 )
 
@@ -51,4 +52,16 @@ func (m PermissionsModel) GetAllForUser(userID int64) (Permissions, error) {
 		return nil, err
 	}
 	return permissions, nil
+}
+
+func (m PermissionsModel) AddForUser(userID int64, codes ...string) error {
+	query := `
+	INSERT INTO users_permissions
+	SELECT $1, permissions.id FROM permissions WHERE permissions.code = ANY($2)`
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	_, err := m.DB.ExecContext(ctx, query, userID, pq.Array(codes))
+	return err
+
 }
