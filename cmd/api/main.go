@@ -38,6 +38,9 @@ type config struct {
 		password string
 		sender   string
 	}
+	cors struct {
+		trustedOrigin []string
+	}
 }
 
 type application struct {
