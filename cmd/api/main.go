@@ -8,6 +8,7 @@ import (
 	"github.com/Maksim-Gr/goBeyond/internal/jsonlog"
 	"github.com/Maksim-Gr/goBeyond/internal/mailer"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -69,6 +70,11 @@ func main() {
 	flag.StringVar(&cfg.smtp.username, "smtp-username", "username", "SMTP username")
 	flag.StringVar(&cfg.smtp.password, "smtp-password", "d627813689127", "SMTP password")
 	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "email of sender", "SMTP sender")
+
+	flag.Func("cors-trusted-origins", "Trusted CORS origins (space separated)", func(val string) error {
+		cfg.cors.trustedOrigin = strings.Fields(val)
+		return nil
+	})
 
 	flag.Parse()
 
