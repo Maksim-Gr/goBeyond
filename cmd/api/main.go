@@ -90,6 +90,11 @@ func main() {
 
 	logger.PrintInfo("database connection pool established", nil)
 	expvar.NewString("version").Set(version)
+
+	expvar.Publish("database", expvar.Func(func() interface{} {
+		return db.Stats()
+	}))
+
 	app := &application{
 		config: cfg,
 		logger: logger,
