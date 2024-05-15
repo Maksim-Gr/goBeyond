@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"github.com/Maksim-Gr/goBeyond/internal/data"
 	"github.com/Maksim-Gr/goBeyond/internal/validator"
+	"github.com/felixge/httpsnoop"
 	"golang.org/x/time/rate"
 	"net"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -190,15 +192,17 @@ func (app *application) metrics(next http.Handler) http.Handler {
 	totalResponseSent := expvar.NewInt("total_responses_sent")
 	totalProcessingTimeMicroseconds := expvar.NewInt("total_processing_time_ms")
 
+	totalResponsesSentByStatus := expvar.NewMap("total_responses_sent_by_status")
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
 
 		totalRequestReceived.Add(1)
+
+		metrics := httpsnoop.CaptureMetrics(next, w, r)
 		next.ServeHTTP(w, r)
 		totalResponseSent.Add(1)
 
-		duration := time.Since(start).Microseconds()
-		totalProcessingTimeMicroseconds.Add(duration)
-
+		totalProcessingTimeMicroseconds.Add(metrics.Duration.Microseconds())
+		totalResponsesSentByStatus.Add(strconv.Itoa(metrics.Code), 1)
 	})
 }
