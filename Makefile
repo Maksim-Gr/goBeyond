@@ -23,3 +23,7 @@ db/migrations/up: confirm
 db/migrations/new:
 	@echo 'Creating migration files for ${name}...'
 	migrate create -seq -ext=.sql -dir=./migrations ${name}
+
+.PHONY: build/api build/api:
+@echo 'Building cmd/api...'
+go build -o=./bin/api ./cmd/api
