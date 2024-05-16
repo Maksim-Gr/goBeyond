@@ -1,3 +1,7 @@
+help:
+	@echo 'Usage:'
+	@sed -n -n 's/^##//p' ${MAKEFILE_LIST} | column -t -s ':' | sed -e 's/^/ /'
+
 # create prerequisite for commands
 confirm:
 	@echo -n 'Are you sure? [y/N]' && read ans && [ $${ans:-N} = y]
