@@ -9,7 +9,7 @@ confirm:
 	@echo -n 'Are you sure? [y/N]' && read ans && [ $${ans:-N} = y]
 .PHONY: run/api
 run/api:
-	go run ./cmd/api
+	go run ./cmd/api -db-dsn=${DATABASE_DNS}
 .PHONY: db/psql
 db/psql:
 	psql ${DATABASE_DNS}
